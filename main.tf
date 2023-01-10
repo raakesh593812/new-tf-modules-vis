@@ -86,7 +86,20 @@ module "storage" {
 
   # Lifecycle management for storage account.
   # Must specify the value to each argument and default is `0` 
-  lifecycles =   []
+  lifecycles =   [{
+      prefix_match               = ["mystore250/folder_path"]
+      tier_to_cool_after_days    = 0
+      tier_to_archive_after_days = 50
+      delete_after_days          = 100
+      snapshot_delete_after_days = 30
+    },
+    {
+      prefix_match               = ["blobstore251/another_path"]
+      tier_to_cool_after_days    = 0
+      tier_to_archive_after_days = 30
+      delete_after_days          = 75
+      snapshot_delete_after_days = 30
+    }]
 
   # Adding TAG's to your Azure resources (Required)
   # ProjectName and Env are already declared above, to use them here, create a varible. 
