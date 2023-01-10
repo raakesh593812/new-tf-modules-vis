@@ -41,19 +41,57 @@ module "resource_groups" {
 
 # }
 
-module "Keyvault" {
-  source = "./modules/Keyvault"
-  resource_group_name        = module.resource_groups.resource_group_name
-  location                   = module.resource_groups.resource_group_location
-  key_vault_name             = "xdeasdkgshard"
-  key_vault_sku_pricing_tier = "premium"
-  enable_purge_protection = false
-  secrets = {
-    "message" = "Hello, world!"
-    "vmpass"  = "excc"
-  }
+# module "Keyvault" {
+#   source = "./modules/Keyvault"
+#   resource_group_name        = module.resource_groups.resource_group_name
+#   location                   = module.resource_groups.resource_group_location
+#   key_vault_name             = "xdeasdkgshard"
+#   key_vault_sku_pricing_tier = "premium"
+#   enable_purge_protection = false
+#   secrets = {
+#     "message" = "Hello, world!"
+#     "vmpass"  = "excc"
+#   }
+#   tags = {
+#     ProjectName  = "demo-project"
+#     Env          = "dev"
+#     Owner        = "user@example.com"
+#     BusinessUnit = "CORP"
+#     ServiceClass = "Gold"
+#   }
+# }
+
+module "storage" {
+  source  = "./modules/storageaccount"
+
+  resource_group_name   = module.resource_groups.resource_group_name
+  location              = module.resource_groups.resource_group_location
+  storage_account_name  = "zmystoragew1x"
+  enable_advanced_threat_protection = true
+
+  # Container lists 
+  containers_list = [
+    { name = "mystore250", access_type = "private" },
+    { name = "blobstore251", access_type = "blob" },
+    { name = "containter252", access_type = "container" }
+  ]
+
+  # Storage queues
+  #queues = ["queue1", "queue2"]
+  enable_adls =  false
+  # Configure managed identities to access Azure Storage (Optional)
+  # Possible types are `SystemAssigned`, `UserAssigned` and `SystemAssigned, UserAssigned`.
+  managed_identity_type = "SystemAssigned"
+  #managed_identity_ids  = [for k in azurerm_user_assigned_identity.example : k.id]
+
+  # Lifecycle management for storage account.
+  # Must specify the value to each argument and default is `0` 
+  lifecycles =   []
+
+  # Adding TAG's to your Azure resources (Required)
+  # ProjectName and Env are already declared above, to use them here, create a varible. 
   tags = {
-    ProjectName  = "demo-project"
+    ProjectName  = "demo-internal"
     Env          = "dev"
     Owner        = "user@example.com"
     BusinessUnit = "CORP"
