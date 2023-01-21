@@ -23,6 +23,11 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
+    - name: run shell
+      run: |
+        echo "thie is test"
+        echo $ARM_CLIENT_ID
+      shell: bash  
     - name: Setup terraform
       uses: hashicorp/setup-terraform@v1
       with:
