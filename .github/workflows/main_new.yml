@@ -40,3 +40,18 @@ jobs:
     - name: terraform Plan
       run: terraform plan 
       working-directory: ${{ env.ROOT_PATH }}
+  apply:
+     name: 'Apply'
+     runs-on: ubuntu-latest
+     needs: terraform_plan
+     environment:
+        name: azure
+        # As prod-env required reviewers is `dineshba`,
+        # it will wait for approval from dineshba
+        
+
+     steps:
+    #... checkout, setup, init terraform steps like plan
+     - name: Terraform Apply
+       run: terraform apply -auto-approve
+       working-directory: ${{ env.ROOT_PATH }}
