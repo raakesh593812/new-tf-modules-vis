@@ -52,6 +52,8 @@ jobs:
 
      steps:
     #... checkout, setup, init terraform steps like plan
+     - name: Checkout
+       uses: actions/checkout@v2
      - name: Terraform Apply
        run: terraform apply -auto-approve
        working-directory: ${{ env.ROOT_PATH }}
