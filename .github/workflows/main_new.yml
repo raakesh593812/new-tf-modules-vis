@@ -28,7 +28,10 @@ jobs:
         echo "thie is test"
         echo $ARM_CLIENT_ID
         echo ${{secrets.AZURE_CLIENT_ID}}
-      shell: bash  
+      shell: bash
+    - uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}  
     - name: Setup terraform
       uses: hashicorp/setup-terraform@v1
       with:
