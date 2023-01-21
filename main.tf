@@ -61,53 +61,53 @@ module "resource_groups" {
 #   }
 # }
 
-module "storage" {
-  source  = "./modules/storageaccount"
+# module "storage" {
+#   source  = "./modules/storageaccount"
 
-  resource_group_name   = module.resource_groups.resource_group_name
-  location              = module.resource_groups.resource_group_location
-  storage_account_name  = "zmystoragew1x"
-  enable_advanced_threat_protection = true
+#   resource_group_name   = module.resource_groups.resource_group_name
+#   location              = module.resource_groups.resource_group_location
+#   storage_account_name  = "zmystoragew1x"
+#   enable_advanced_threat_protection = true
 
-  # Container lists 
-  containers_list = [
-    { name = "mystore250", access_type = "private" },
-    { name = "blobstore251", access_type = "blob" },
-    { name = "containter252", access_type = "container" }
-  ]
+#   # Container lists 
+#   containers_list = [
+#     { name = "mystore250", access_type = "private" },
+#     { name = "blobstore251", access_type = "blob" },
+#     { name = "containter252", access_type = "container" }
+#   ]
 
-  # Storage queues
-  #queues = ["queue1", "queue2"]
-  enable_adls =  false
-  # Configure managed identities to access Azure Storage (Optional)
-  # Possible types are `SystemAssigned`, `UserAssigned` and `SystemAssigned, UserAssigned`.
-  managed_identity_type = "SystemAssigned"
-  #managed_identity_ids  = [for k in azurerm_user_assigned_identity.example : k.id]
+#   # Storage queues
+#   #queues = ["queue1", "queue2"]
+#   enable_adls =  false
+#   # Configure managed identities to access Azure Storage (Optional)
+#   # Possible types are `SystemAssigned`, `UserAssigned` and `SystemAssigned, UserAssigned`.
+#   managed_identity_type = "SystemAssigned"
+#   #managed_identity_ids  = [for k in azurerm_user_assigned_identity.example : k.id]
 
-  # Lifecycle management for storage account.
-  # Must specify the value to each argument and default is `0` 
-  lifecycles =   [{
-      prefix_match               = ["mystore250/folder_path"]
-      tier_to_cool_after_days    = 0
-      tier_to_archive_after_days = 50
-      delete_after_days          = 100
-      snapshot_delete_after_days = 30
-    },
-    {
-      prefix_match               = ["blobstore251/another_path"]
-      tier_to_cool_after_days    = 0
-      tier_to_archive_after_days = 30
-      delete_after_days          = 75
-      snapshot_delete_after_days = 30
-    }]
+#   # Lifecycle management for storage account.
+#   # Must specify the value to each argument and default is `0` 
+#   lifecycles =   [{
+#       prefix_match               = ["mystore250/folder_path"]
+#       tier_to_cool_after_days    = 0
+#       tier_to_archive_after_days = 50
+#       delete_after_days          = 100
+#       snapshot_delete_after_days = 30
+#     },
+#     {
+#       prefix_match               = ["blobstore251/another_path"]
+#       tier_to_cool_after_days    = 0
+#       tier_to_archive_after_days = 30
+#       delete_after_days          = 75
+#       snapshot_delete_after_days = 30
+#     }]
 
-  # Adding TAG's to your Azure resources (Required)
-  # ProjectName and Env are already declared above, to use them here, create a varible. 
-  tags = {
-    ProjectName  = "demo-internal"
-    Env          = "dev"
-    Owner        = "user@example.com"
-    BusinessUnit = "CORP"
-    ServiceClass = "Gold"
-  }
-}
+#   # Adding TAG's to your Azure resources (Required)
+#   # ProjectName and Env are already declared above, to use them here, create a varible. 
+#   tags = {
+#     ProjectName  = "demo-internal"
+#     Env          = "dev"
+#     Owner        = "user@example.com"
+#     BusinessUnit = "CORP"
+#     ServiceClass = "Gold"
+#   }
+# }
