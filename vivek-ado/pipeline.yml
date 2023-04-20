@@ -1,0 +1,106 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+
+pool:
+  # Needs to run on a host with terraform cli and can reach the tfe api
+  name: viv-poc
+
+trigger : none
+
+parameters:
+  - name: subscription
+    displayName: select approitate value
+    type: string
+    default: '23691e30-29e0-45f0-9efa-9e38d2d8358e'
+  - name: resourcegroupname
+    type: string
+    default: 'MYRESOURCEGROUP5'
+  - name:   principleid
+    type: string
+    default: 'aada50fe-1cac-4e82-b606-dbd8dae89739'
+variables:
+     #Production Variables
+     - name: subscription
+       value: '${{ parameters.subscription }}'
+
+     - name: resourcegroupname
+       value: '${{ parameters.resourcegroupname }}'
+
+     - name: principleid
+       value: '${{ parameters.principleid }}'      
+stages:
+- stage: Foundation
+  jobs: 
+    # - job: pre_deploy
+    #   steps:
+    #   - checkout: self
+    #   - task: TerraformTaskV4@4
+    #     inputs:
+    #       provider: 'azurerm'
+    #       command: 'init'
+    #       backendServiceArm: 'aks-sp-msi-new'
+    #       backendAzureRmResourceGroupName: 'cloud-shell-storage-centralindia'
+    #       backendAzureRmStorageAccountName: 'csg100300009f52f5f3'
+    #       backendAzureRmContainerName: 'vis'
+    #       backendAzureRmKey: 'vis-replacetoken.tfstate'
+#     - job: replace_token
+#       dependsOn: pre_deploy
+#       steps:
+#       - checkout: self
+# ### replace tokens in tf and tfvars.
+#       - task: replacetokens@5
+#         inputs:
+#           targetFiles: '**/*.tfvars'
+#           encoding: 'auto'
+#           tokenPattern: 'custom'
+#           tokenPrefix: '__'
+#           tokenSuffix: '__'
+#           writeBOM: true
+#           actionOnMissing: 'warn'
+#           keepToken: false
+#           actionOnNoFiles: 'continue'
+#           enableTransforms: false
+#           enableRecursion: false
+#           useLegacyPattern: false
+#           enableTelemetry: true
+    - job: terraform_plan
+      #dependsOn: replace_token
+      steps:
+      - checkout: self
+      - task: replacetokens@5
+        inputs:
+          targetFiles: '**/*.tfvars'
+          encoding: 'auto'
+          tokenPattern: 'custom'
+          tokenPrefix: '__'
+          tokenSuffix: '__'
+          writeBOM: true
+          actionOnMissing: 'warn'
+          keepToken: false
+          actionOnNoFiles: 'continue'
+          enableTransforms: false
+          enableRecursion: false
+          useLegacyPattern: false
+          enableTelemetry: true
+
+      - task: TerraformTaskV4@4
+        inputs:
+          provider: 'azurerm'
+          command: 'init'
+          backendServiceArm: 'aks-sp-msi-new'
+          backendAzureRmResourceGroupName: 'cloud-shell-storage-centralindia'
+          backendAzureRmStorageAccountName: 'csg100300009f52f5f3'
+          backendAzureRmContainerName: 'vis'
+          backendAzureRmKey: 'vis-replacetoken.tfstate'
+      - task: TerraformTaskV4@4
+        inputs:
+          provider: 'azurerm'
+          command: 'plan'
+          environmentServiceNameAzureRM: 'aks-sp-msi-new'
+
+
+       
+      
